@@ -31,7 +31,6 @@ QVariant ZhttpRequestPacket::toVariant() const
 	QByteArray typeStr;
 	switch(type)
 	{
-		case Data:           typeStr = "data"; break;
 		case Error:          typeStr = "error"; break;
 		case Credit:         typeStr = "credit"; break;
 		case Cancel:         typeStr = "cancel"; break;
