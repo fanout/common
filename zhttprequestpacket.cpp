@@ -142,6 +142,8 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 			type = HandoffStart;
 		else if(typeStr == "handoff-proceed")
 			type = HandoffProceed;
+		else
+			return false;
 	}
 
 	if(type == Error)
