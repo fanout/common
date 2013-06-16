@@ -97,23 +97,25 @@ bool ZhttpResponsePacket::fromVariant(const QVariant &in)
 		return false;
 	id = obj["id"].toByteArray();
 
-	if(!obj.contains("type") || obj["type"].type() != QVariant::ByteArray)
-		return false;
-	QByteArray typeStr = obj["type"].toByteArray();
+	type = Data;
+	if(obj.contains("type"))
+	{
+		if(obj["type"].type() != QVariant::ByteArray)
+			return false;
 
-	type = (Type)-1;
-	if(typeStr == "data")
-		type = Data;
-	else if(typeStr == "error")
-		type = Error;
-	else if(typeStr == "credit")
-		type = Credit;
-	else if(typeStr == "cancel")
-		type = Cancel;
-	else if(typeStr == "handoff-start")
-		type = HandoffStart;
-	else if(typeStr == "handoff-proceed")
-		type = HandoffProceed;
+		QByteArray typeStr = obj["type"].toByteArray();
+
+		if(typeStr == "error")
+			type = Error;
+		else if(typeStr == "credit")
+			type = Credit;
+		else if(typeStr == "cancel")
+			type = Cancel;
+		else if(typeStr == "handoff-start")
+			type = HandoffStart;
+		else if(typeStr == "handoff-proceed")
+			type = HandoffProceed;
+	}
 
 	if(type == Error)
 	{
