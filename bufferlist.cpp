@@ -17,6 +17,8 @@
 
 #include "bufferlist.h"
 
+#include <assert.h>
+
 BufferList::BufferList() :
 	size_(0),
 	offset_(0)
@@ -34,7 +36,7 @@ void BufferList::append(const QByteArray &buf)
 
 QByteArray BufferList::take(int size)
 {
-	if(size == 0)
+	if(size_ == 0 || size == 0)
 		return QByteArray();
 
 	int toRead;
@@ -43,10 +45,15 @@ QByteArray BufferList::take(int size)
 	else
 		toRead = size_;
 
+	assert(!bufs_.isEmpty());
+
 	// if we're reading the exact size of the first buffer, cheaply
 	//   return it
 	if(bufs_.first().size() == toRead)
+	{
+		size_ -= toRead;
 		return bufs_.takeFirst();
+	}
 
 	QByteArray out;
 	out.resize(toRead);
