@@ -31,6 +31,7 @@ public:
 		Data,
 		Error,
 		Credit,
+		KeepAlive,
 		Cancel,
 		HandoffStart,
 		HandoffProceed

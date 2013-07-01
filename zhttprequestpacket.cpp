@@ -33,6 +33,7 @@ QVariant ZhttpRequestPacket::toVariant() const
 	{
 		case Error:          typeStr = "error"; break;
 		case Credit:         typeStr = "credit"; break;
+		case KeepAlive:      typeStr = "keep-alive"; break;
 		case Cancel:         typeStr = "cancel"; break;
 		case HandoffStart:   typeStr = "handoff-start"; break;
 		case HandoffProceed: typeStr = "handoff-proceed"; break;
@@ -136,6 +137,8 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 			type = Error;
 		else if(typeStr == "credit")
 			type = Credit;
+		else if(typeStr == "keep-alive")
+			type = KeepAlive;
 		else if(typeStr == "cancel")
 			type = Cancel;
 		else if(typeStr == "handoff-start")
