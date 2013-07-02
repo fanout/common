@@ -94,7 +94,7 @@ QVariant ZhttpRequestPacket::toVariant() const
 		obj["connect-host"] = connectHost.toUtf8();
 
 	if(connectPort != -1)
-		obj["connect-port"] = QByteArray::number(connectPort);
+		obj["connect-port"] = connectPort;
 
 	if(ignorePolicies)
 		obj["ignore-policies"] = true;
