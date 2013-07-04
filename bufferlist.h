@@ -29,8 +29,11 @@ public:
 	int size() const { return size_; }
 	bool isEmpty() const { return size_ == 0; }
 
+	void clear();
 	void append(const QByteArray &buf);
 	QByteArray take(int size = -1);
+
+	QByteArray toByteArray(); // non-const because we rewrite the list
 
 	BufferList & operator+=(const QByteArray &buf)
 	{

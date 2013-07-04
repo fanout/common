@@ -25,6 +25,13 @@ BufferList::BufferList() :
 {
 }
 
+void BufferList::clear()
+{
+	bufs_.clear();
+	size_ = 0;
+	offset_ = 0;
+}
+
 void BufferList::append(const QByteArray &buf)
 {
 	if(buf.size() < 1)
@@ -77,6 +84,30 @@ QByteArray BufferList::take(int size)
 		size_ -= bsize;
 		outp += bsize;
 	}
+
+	return out;
+}
+
+QByteArray BufferList::toByteArray()
+{
+	if(size_ == 0)
+		return QByteArray();
+
+	QByteArray out;
+	while(!bufs_.isEmpty())
+	{
+		if(offset_ > 0)
+		{
+			out += bufs_.first().mid(offset_);
+			offset_ = 0;
+			bufs_.removeFirst();
+		}
+		else
+			out += bufs_.takeFirst();
+	}
+
+	// keep the rewritten buffer as the only buffer
+	bufs_ += out;
 
 	return out;
 }
