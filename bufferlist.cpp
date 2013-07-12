@@ -56,7 +56,7 @@ QByteArray BufferList::take(int size)
 
 	// if we're reading the exact size of the first buffer, cheaply
 	//   return it
-	if(bufs_.first().size() == toRead)
+	if(offset_ == 0 && bufs_.first().size() == toRead)
 	{
 		size_ -= toRead;
 		return bufs_.takeFirst();
