@@ -62,6 +62,12 @@ void log_startClock()
 	g_time.start();
 }
 
+int log_outputLevel()
+{
+	QMutexLocker locker(g_mutex());
+	return g_level;
+}
+
 void log_setOutputLevel(int level)
 {
 	QMutexLocker locker(g_mutex());
