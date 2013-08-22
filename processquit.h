@@ -93,6 +93,8 @@ signals:
 	*/
 	void quit();
 
+	void hup();
+
 private:
 	class Private;
 	friend class Private;

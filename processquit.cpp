@@ -166,6 +166,8 @@ public:
 	{
 		Q_UNUSED(sig);
 		unsigned char c = 0;
+		if(sig == SIGHUP)
+			c = 1;
 		if(::write(g_pq->d->sig_pipe[1], &c, 1) == -1)
 		{
 			// TODO: error handling?
@@ -217,6 +219,12 @@ public slots:
 		if(::read(sig_pipe[0], &c, 1) == -1)
 		{
 			// TODO: error handling?
+			return;
+		}
+
+		if(c == 1) // SIGHUP
+		{
+			emit q->hup();
 			return;
 		}
 
