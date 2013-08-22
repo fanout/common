@@ -18,6 +18,8 @@
 #ifndef LOG_H
 #define LOG_H
 
+#include <QString>
+
 // really simply logging stuff
 
 #define LOG_LEVEL_ERROR   0
@@ -28,6 +30,8 @@
 void log_startClock();
 int log_outputLevel();
 void log_setOutputLevel(int level);
+bool log_setFile(const QString &fname);
+bool log_rotate();
 
 void log_error(const char *fmt, ...);
 void log_warning(const char *fmt, ...);

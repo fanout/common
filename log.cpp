@@ -26,12 +26,18 @@
 Q_GLOBAL_STATIC(QMutex, g_mutex)
 static int g_level = LOG_LEVEL_DEBUG;
 static QTime g_time;
+static QString *g_filename;
+static FILE *g_file;
 
 static void log(int level, const char *fmt, va_list ap)
 {
 	g_mutex()->lock();
 	int current_level = g_level;
-	int elapsed = g_time.elapsed();
+	int elapsed;
+	if(!g_time.isNull())
+		elapsed = g_time.elapsed();
+	else
+		elapsed = -1;
 	g_mutex()->unlock();
 
 	if(level <= current_level)
@@ -50,9 +56,24 @@ static void log(int level, const char *fmt, va_list ap)
 				lstr = "DEBUG"; break;
 		}
 
-		QTime t(0, 0);
-		t = t.addMSecs(elapsed);
-		fprintf(stderr, "[%s] %s %s\n", lstr, qPrintable(t.toString("HH:mm:ss.zzz")), qPrintable(str));
+		QString tstr;
+		if(elapsed != -1)
+		{
+			QTime t(0, 0);
+			t = t.addMSecs(elapsed);
+			tstr = t.toString("HH:mm:ss.zzz");
+		}
+		else
+		{
+			tstr = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
+		}
+
+		FILE *out;
+		if(g_file)
+			out = g_file;
+		else
+			out = stdout;
+		fprintf(out, "[%s] %s %s\n", lstr, qPrintable(tstr), qPrintable(str));
 	}
 }
 
@@ -72,6 +93,38 @@ void log_setOutputLevel(int level)
 {
 	QMutexLocker locker(g_mutex());
 	g_level = level;
+}
+
+bool log_setFile(const QString &fname)
+{
+	QMutexLocker locker(g_mutex());
+	if(g_file)
+	{
+		fclose(g_file);
+		delete g_filename;
+		g_filename = 0;
+		g_file = 0;
+	}
+	if(fname.isEmpty())
+		return true;
+	FILE *f = fopen(fname.toLocal8Bit().data(), "a");
+	if(!f)
+		return false;
+	setbuf(f, NULL);
+	g_filename = new QString(fname);
+	g_file = f;
+	return true;
+}
+
+bool log_rotate()
+{
+	QMutexLocker locker(g_mutex());
+	if(!g_file)
+		return true;
+	if(!freopen(g_filename->toLocal8Bit().data(), "a", g_file))
+		return false;
+	setbuf(g_file, NULL);
+	return true;
 }
 
 void log_error(const char *fmt, ...)
