@@ -74,6 +74,7 @@ static void log(int level, const char *fmt, va_list ap)
 		else
 			out = stdout;
 		fprintf(out, "[%s] %s %s\n", lstr, qPrintable(tstr), qPrintable(str));
+		fflush(out);
 	}
 }
 
