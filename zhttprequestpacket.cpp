@@ -37,6 +37,9 @@ QVariant ZhttpRequestPacket::toVariant() const
 		case Cancel:         typeStr = "cancel"; break;
 		case HandoffStart:   typeStr = "handoff-start"; break;
 		case HandoffProceed: typeStr = "handoff-proceed"; break;
+		case Close:          typeStr = "close"; break;
+		case Ping:           typeStr = "ping"; break;
+		case Pong:           typeStr = "pong"; break;
 		default: break;
 	}
 
@@ -62,10 +65,13 @@ QVariant ZhttpRequestPacket::toVariant() const
 		obj["max-size"] = maxSize;
 
 	if(!method.isEmpty())
-	{
 		obj["method"] = method.toLatin1();
+
+	if(!uri.isEmpty())
 		obj["uri"] = uri.toEncoded();
 
+	if(!headers.isEmpty())
+	{
 		QVariantList vheaders;
 		foreach(const HttpHeader &h, headers)
 		{
@@ -80,6 +86,12 @@ QVariant ZhttpRequestPacket::toVariant() const
 
 	if(!body.isEmpty())
 		obj["body"] = body;
+
+	if(!contentType.isEmpty())
+		obj["content-type"] = contentType;
+
+	if(code != -1)
+		obj["code"] = code;
 
 	if(userData.isValid())
 		obj["user-data"] = userData;
@@ -145,6 +157,12 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 			type = HandoffStart;
 		else if(typeStr == "handoff-proceed")
 			type = HandoffProceed;
+		else if(typeStr == "close")
+			type = Close;
+		else if(typeStr == "ping")
+			type = Ping;
+		else if(typeStr == "pong")
+			type = Pong;
 		else
 			return false;
 	}
@@ -250,6 +268,24 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 			return false;
 
 		body = obj["body"].toByteArray();
+	}
+
+	contentType.clear();
+	if(obj.contains("content-type"))
+	{
+		if(obj["content-type"].type() != QVariant::ByteArray)
+			return false;
+
+		contentType = obj["content-type"].toByteArray();
+	}
+
+	code = -1;
+	if(obj.contains("code"))
+	{
+		if(obj["code"].type() != QVariant::Int)
+			return false;
+
+		code = obj["code"].toInt();
 	}
 
 	userData = obj["user-data"];

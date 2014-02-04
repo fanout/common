@@ -32,7 +32,10 @@ public:
 		KeepAlive,
 		Cancel,
 		HandoffStart,
-		HandoffProceed
+		HandoffProceed,
+		Close, // WebSocket
+		Ping, // WebSocket
+		Pong // WebSocket
 	};
 
 	QByteArray from;
@@ -49,6 +52,8 @@ public:
 	QByteArray reason;
 	HttpHeaders headers;
 	QByteArray body;
+
+	QByteArray contentType; // WebSocket
 
 	QVariant userData;
 

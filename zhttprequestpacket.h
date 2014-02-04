@@ -34,7 +34,10 @@ public:
 		KeepAlive,
 		Cancel,
 		HandoffStart,
-		HandoffProceed
+		HandoffProceed,
+		Close, // WebSocket
+		Ping, // WebSocket
+		Pong // WebSocket
 	};
 
 	QByteArray from;
@@ -54,6 +57,9 @@ public:
 	HttpHeaders headers;
 	QByteArray body;
 
+	QByteArray contentType; // WebSocket
+	int code; // WebSocket
+
 	QVariant userData;
 
 	QHostAddress peerAddress;
@@ -71,6 +77,7 @@ public:
 		more(false),
 		stream(false),
 		maxSize(-1),
+		code(-1),
 		peerPort(-1),
 		connectPort(-1),
 		ignorePolicies(false),
