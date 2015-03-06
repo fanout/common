@@ -71,7 +71,7 @@ QVariant ZhttpResponsePacket::toVariant() const
 		obj["headers"] = vheaders;
 	}
 
-	if(!body.isEmpty())
+	if(!body.isNull())
 		obj["body"] = body;
 
 	if(!contentType.isEmpty())
