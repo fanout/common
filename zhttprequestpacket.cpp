@@ -117,6 +117,9 @@ QVariant ZhttpRequestPacket::toVariant() const
 	if(ignoreTlsErrors)
 		obj["ignore-tls-errors"] = true;
 
+	if(followRedirects)
+		obj["follow-redirects"] = true;
+
 	return obj;
 }
 
@@ -354,6 +357,15 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 			return false;
 
 		ignoreTlsErrors = obj["ignore-tls-errors"].toBool();
+	}
+
+	followRedirects = false;
+	if(obj.contains("follow-redirects"))
+	{
+		if(obj["follow-redirects"].type() != QVariant::Bool)
+			return false;
+
+		followRedirects = obj["follow-redirects"].toBool();
 	}
 
 	return true;

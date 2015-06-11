@@ -70,6 +70,7 @@ public:
 	int connectPort;
 	bool ignorePolicies;
 	bool ignoreTlsErrors;
+	bool followRedirects;
 
 	ZhttpRequestPacket() :
 		type((Type)-1),
@@ -83,7 +84,8 @@ public:
 		peerPort(-1),
 		connectPort(-1),
 		ignorePolicies(false),
-		ignoreTlsErrors(false)
+		ignoreTlsErrors(false),
+		followRedirects(false)
 	{
 	}
 
