@@ -51,6 +51,7 @@ public:
 	bool more;
 	bool stream;
 	int maxSize;
+	int timeout;
 
 	QString method;
 	QUrl uri;
@@ -77,6 +78,7 @@ public:
 		more(false),
 		stream(false),
 		maxSize(-1),
+		timeout(-1),
 		code(-1),
 		peerPort(-1),
 		connectPort(-1),

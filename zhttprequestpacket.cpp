@@ -64,6 +64,9 @@ QVariant ZhttpRequestPacket::toVariant() const
 	if(maxSize != -1)
 		obj["max-size"] = maxSize;
 
+	if(timeout != -1)
+		obj["timeout"] = timeout;
+
 	if(!method.isEmpty())
 		obj["method"] = method.toLatin1();
 
@@ -222,6 +225,15 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 			return false;
 
 		maxSize = obj["max-size"].toInt();
+	}
+
+	timeout = -1;
+	if(obj.contains("timeout"))
+	{
+		if(obj["timeout"].type() != QVariant::Int)
+			return false;
+
+		timeout = obj["timeout"].toInt();
 	}
 
 	method.clear();
