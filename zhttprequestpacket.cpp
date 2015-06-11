@@ -26,7 +26,8 @@ QVariant ZhttpRequestPacket::toVariant() const
 	if(!from.isEmpty())
 		obj["from"] = from;
 
-	obj["id"] = id;
+	if(!id.isEmpty())
+		obj["id"] = id;
 
 	QByteArray typeStr;
 	switch(type)
@@ -139,9 +140,13 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 		from = obj["from"].toByteArray();
 	}
 
-	if(!obj.contains("id") || obj["id"].type() != QVariant::ByteArray)
-		return false;
-	id = obj["id"].toByteArray();
+	if(obj.contains("id"))
+	{
+		if(obj["id"].type() != QVariant::ByteArray)
+			return false;
+
+		id = obj["id"].toByteArray();
+	}
 
 	type = Data;
 	if(obj.contains("type"))
