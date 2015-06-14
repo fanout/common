@@ -29,6 +29,8 @@ public:
 	int size() const { return size_; }
 	bool isEmpty() const { return size_ == 0; }
 
+	QByteArray mid(int pos, int size = -1) const;
+
 	void clear();
 	void append(const QByteArray &buf);
 	QByteArray take(int size = -1);
@@ -45,6 +47,8 @@ private:
 	QList<QByteArray> bufs_;
 	int size_;
 	int offset_;
+
+	void findPos(int pos, int *bufferIndex, int *offset) const;
 };
 
 #endif
