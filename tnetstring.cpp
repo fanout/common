@@ -26,7 +26,7 @@ QByteArray fromByteArray(const QByteArray &in)
 	return QByteArray::number(in.size()) + ':' + in + ',';
 }
 
-QByteArray fromInt(int in)
+QByteArray fromInt(qint64 in)
 {
 	QByteArray val = QByteArray::number(in);
 	return QByteArray::number(val.size()) + ':' + val + '#';
@@ -55,8 +55,6 @@ QByteArray fromVariant(const QVariant &in)
 	{
 		case QVariant::ByteArray:
 			return fromByteArray(in.toByteArray());
-		case QVariant::Int:
-			return fromInt(in.toInt());
 		case QVariant::Double:
 			return fromDouble(in.toDouble());
 		case QVariant::Bool:
@@ -68,6 +66,9 @@ QByteArray fromVariant(const QVariant &in)
 		case QVariant::List:
 			return fromList(in.toList());
 		default:
+			if(in.canConvert(QVariant::LongLong))
+				return fromInt(in.toLongLong());
+
 			// unsupported type
 			assert(0);
 			return QByteArray();
@@ -103,7 +104,7 @@ bool check(const QByteArray &in, int offset, Type *type, int *dataOffset, int *d
 
 	bool ok;
 	int size = in.mid(offset, at - offset).toInt(&ok);
-	if(!ok)
+	if(!ok || size < 0)
 		return false;
 
 	char typeChar = in[at + 1 + size];
@@ -134,12 +135,12 @@ QByteArray toByteArray(const QByteArray &in, int offset, int dataOffset, int dat
 	return in.mid(dataOffset, dataSize);
 }
 
-int toInt(const QByteArray &in, int offset, int dataOffset, int dataSize, bool *ok)
+qint64 toInt(const QByteArray &in, int offset, int dataOffset, int dataSize, bool *ok)
 {
 	Q_UNUSED(offset);
 	QByteArray val = in.mid(dataOffset, dataSize);
 	bool ok_;
-	int x = val.toInt(&ok_);
+	qint64 x = val.toLongLong(&ok_);
 	if(!ok_)
 		x = 0;
 	if(ok)
@@ -436,16 +437,16 @@ QString variantToString(const QVariant &in, int indent)
 		QByteArray val = in.toByteArray();
 		out += '\"' + byteArrayToEscapedString(val) + '\"';
 	}
-	else if(type == QVariant::Int)
-		out += QString::number(in.toInt());
 	else if(type == QVariant::Double)
 		out += QString::number(in.toDouble());
 	else if(type == QVariant::Bool)
 		out += in.toBool() ? "true" : "false";
 	else if(type == QVariant::Invalid)
 		out += "null";
+	else if(in.canConvert(QVariant::LongLong))
+		out += QString::number(in.toLongLong());
 	else
-		out += "<unknown>";
+		out += QString("<unknown: %1>").arg((int)type);
 
 	return out;
 }
