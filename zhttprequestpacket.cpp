@@ -17,6 +17,7 @@
 
 #include "zhttprequestpacket.h"
 
+#include <stdio.h>
 #include "tnetstring.h"
 
 QVariant ZhttpRequestPacket::toVariant() const
@@ -193,7 +194,7 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	seq = -1;
 	if(obj.contains("seq"))
 	{
-		if(obj["seq"].type() != QVariant::Int)
+		if(!obj["seq"].canConvert(QVariant::Int))
 			return false;
 
 		seq = obj["seq"].toInt();
@@ -202,7 +203,7 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	credits = -1;
 	if(obj.contains("credits"))
 	{
-		if(obj["credits"].type() != QVariant::Int)
+		if(!obj["credits"].canConvert(QVariant::Int))
 			return false;
 
 		credits = obj["credits"].toInt();
@@ -229,7 +230,7 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	maxSize = -1;
 	if(obj.contains("max-size"))
 	{
-		if(obj["max-size"].type() != QVariant::Int)
+		if(!obj["max-size"].canConvert(QVariant::Int))
 			return false;
 
 		maxSize = obj["max-size"].toInt();
@@ -238,7 +239,7 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	timeout = -1;
 	if(obj.contains("timeout"))
 	{
-		if(obj["timeout"].type() != QVariant::Int)
+		if(!obj["timeout"].canConvert(QVariant::Int))
 			return false;
 
 		timeout = obj["timeout"].toInt();
@@ -302,7 +303,7 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	code = -1;
 	if(obj.contains("code"))
 	{
-		if(obj["code"].type() != QVariant::Int)
+		if(!obj["code"].canConvert(QVariant::Int))
 			return false;
 
 		code = obj["code"].toInt();
@@ -322,7 +323,7 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	peerPort = -1;
 	if(obj.contains("peer-port"))
 	{
-		if(obj["peer-port"].type() != QVariant::Int)
+		if(!obj["peer-port"].canConvert(QVariant::Int))
 			return false;
 
 		peerPort = obj["peer-port"].toInt();
@@ -340,7 +341,7 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	connectPort = -1;
 	if(obj.contains("connect-port"))
 	{
-		if(obj["connect-port"].type() != QVariant::Int)
+		if(!obj["connect-port"].canConvert(QVariant::Int))
 			return false;
 
 		connectPort = obj["connect-port"].toInt();

@@ -153,7 +153,7 @@ bool ZhttpResponsePacket::fromVariant(const QVariant &in)
 	seq = -1;
 	if(obj.contains("seq"))
 	{
-		if(obj["seq"].type() != QVariant::Int)
+		if(!obj["seq"].canConvert(QVariant::Int))
 			return false;
 
 		seq = obj["seq"].toInt();
@@ -162,7 +162,7 @@ bool ZhttpResponsePacket::fromVariant(const QVariant &in)
 	credits = -1;
 	if(obj.contains("credits"))
 	{
-		if(obj["credits"].type() != QVariant::Int)
+		if(!obj["credits"].canConvert(QVariant::Int))
 			return false;
 
 		credits = obj["credits"].toInt();
@@ -180,7 +180,7 @@ bool ZhttpResponsePacket::fromVariant(const QVariant &in)
 	code = -1;
 	if(obj.contains("code"))
 	{
-		if(obj["code"].type() != QVariant::Int)
+		if(!obj["code"].canConvert(QVariant::Int))
 			return false;
 
 		code = obj["code"].toInt();
