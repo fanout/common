@@ -210,7 +210,7 @@ bool ZhttpResponsePacket::fromVariant(const QVariant &in)
 			if(list[0].type() != QVariant::ByteArray || list[1].type() != QVariant::ByteArray)
 				return false;
 
-			headers += QPair<QByteArray, QByteArray>(list[0].toByteArray(), list[1].toByteArray());
+			headers += HttpHeader(list[0].toByteArray(), list[1].toByteArray());
 		}
 	}
 
