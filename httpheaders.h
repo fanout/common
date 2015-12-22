@@ -47,7 +47,7 @@ public:
 	HttpHeaderParameters getAsParameters(const QByteArray &key, ParseMode mode = NoParseFirstParameter) const;
 	QByteArray getAsFirstParameter(const QByteArray &key) const;
 	QList<QByteArray> getAll(const QByteArray &key, bool split = true) const;
-	QList<HttpHeaderParameters> getAllAsParameters(const QByteArray &key, ParseMode mode = NoParseFirstParameter,  bool split = true) const;
+	QList<HttpHeaderParameters> getAllAsParameters(const QByteArray &key, ParseMode mode = NoParseFirstParameter, bool split = true) const;
 	QList<QByteArray> takeAll(const QByteArray &key, bool split = true);
 	void removeAll(const QByteArray &key);
 

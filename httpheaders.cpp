@@ -201,7 +201,7 @@ HttpHeaderParameters HttpHeaders::parseParameters(const QByteArray &in, ParseMod
 		int at = in.indexOf(';');
 		if(at != -1)
 		{
-			out += HttpHeaderParameter(in.mid(at).trimmed(), QByteArray());
+			out += HttpHeaderParameter(in.mid(0, at).trimmed(), QByteArray());
 			start = at + 1;
 		}
 		else
