@@ -222,16 +222,9 @@ HttpHeaderParameters HttpHeaders::parseParameters(const QByteArray &in, ParseMod
 			var = in.mid(start, at - start).trimmed();
 			if(in[at] == '=')
 			{
-				if(at + 1 >= in.size())
-				{
-					if(ok)
-						*ok = false;
-					return HttpHeaderParameters();
-				}
-
 				++at;
 
-				if(in[at] == '\"')
+				if(at < in.size() && in[at] == '\"')
 				{
 					++at;
 
