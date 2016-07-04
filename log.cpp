@@ -29,6 +29,17 @@ static QTime g_time;
 static QString *g_filename;
 static FILE *g_file;
 
+static void log(const char *s)
+{
+	FILE *out;
+	if(g_file)
+		out = g_file;
+	else
+		out = stdout;
+	fprintf(out, "%s\n", s);
+	fflush(out);
+}
+
 static void log(int level, const char *fmt, va_list ap)
 {
 	g_mutex()->lock();
@@ -158,4 +169,9 @@ void log_debug(const char *fmt, ...)
 	va_start(ap, fmt);
 	log(LOG_LEVEL_DEBUG, fmt, ap);
 	va_end(ap);
+}
+
+void log_raw(const char *s)
+{
+	log(s);
 }

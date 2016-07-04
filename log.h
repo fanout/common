@@ -38,4 +38,7 @@ void log_warning(const char *fmt, ...);
 void log_info(const char *fmt, ...);
 void log_debug(const char *fmt, ...);
 
+// log without prefixing or anything. useful for forwarding log data
+void log_raw(const char *line);
+
 #endif
