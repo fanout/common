@@ -69,6 +69,7 @@ public:
 	QString connectHost;
 	int connectPort;
 	bool ignorePolicies;
+	bool trustConnectHost;
 	bool ignoreTlsErrors;
 	bool followRedirects;
 
@@ -84,6 +85,7 @@ public:
 		peerPort(-1),
 		connectPort(-1),
 		ignorePolicies(false),
+		trustConnectHost(false),
 		ignoreTlsErrors(false),
 		followRedirects(false)
 	{

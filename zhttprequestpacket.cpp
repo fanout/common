@@ -116,6 +116,9 @@ QVariant ZhttpRequestPacket::toVariant() const
 	if(ignorePolicies)
 		obj["ignore-policies"] = true;
 
+	if(trustConnectHost)
+		obj["trust-connect-host"] = true;
+
 	if(ignoreTlsErrors)
 		obj["ignore-tls-errors"] = true;
 
@@ -354,6 +357,15 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 			return false;
 
 		ignorePolicies = obj["ignore-policies"].toBool();
+	}
+
+	trustConnectHost = false;
+	if(obj.contains("trust-connect-host"))
+	{
+		if(obj["trust-connect-host"].type() != QVariant::Bool)
+			return false;
+
+		trustConnectHost = obj["trust-connect-host"].toBool();
 	}
 
 	ignoreTlsErrors = false;
