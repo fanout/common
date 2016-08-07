@@ -72,6 +72,7 @@ public:
 	bool trustConnectHost;
 	bool ignoreTlsErrors;
 	bool followRedirects;
+	QVariant passthrough; // if valid, may contain pushpin-specific passthrough info
 
 	ZhttpRequestPacket() :
 		type((Type)-1),

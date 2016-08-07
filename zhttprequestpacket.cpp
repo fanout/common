@@ -125,6 +125,9 @@ QVariant ZhttpRequestPacket::toVariant() const
 	if(followRedirects)
 		obj["follow-redirects"] = true;
 
+	if(passthrough.isValid())
+		obj["passthrough"] = passthrough;
+
 	return obj;
 }
 
@@ -312,7 +315,7 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 		code = obj["code"].toInt();
 	}
 
-	userData = obj["user-data"];
+	userData = obj.value("user-data");
 
 	peerAddress = QHostAddress();
 	if(obj.contains("peer-address"))
@@ -385,6 +388,8 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 
 		followRedirects = obj["follow-redirects"].toBool();
 	}
+
+	passthrough = obj.value("passthrough");
 
 	return true;
 }
