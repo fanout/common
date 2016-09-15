@@ -24,8 +24,20 @@ QVariant ZhttpResponsePacket::toVariant() const
 	if(!from.isEmpty())
 		obj["from"] = from;
 
-	if(!id.isEmpty())
-		obj["id"] = id;
+	if(!ids.isEmpty())
+	{
+		if(ids.count() == 1)
+		{
+			obj["id"] = ids.first();
+		}
+		else
+		{
+			QVariantList vl;
+			foreach(const QByteArray &id, ids)
+				vl += id;
+			obj["id"] = vl;
+		}
+	}
 
 	QByteArray typeStr;
 	switch(type)
@@ -81,6 +93,13 @@ QVariant ZhttpResponsePacket::toVariant() const
 	if(userData.isValid())
 		obj["user-data"] = userData;
 
+	if(multi)
+	{
+		QVariantHash ext;
+		ext["multi"] = true;
+		obj["ext"] = ext;
+	}
+
 	return obj;
 }
 
@@ -100,12 +119,26 @@ bool ZhttpResponsePacket::fromVariant(const QVariant &in)
 		from = obj["from"].toByteArray();
 	}
 
+	ids.clear();
 	if(obj.contains("id"))
 	{
-		if(obj["id"].type() != QVariant::ByteArray)
-			return false;
+		if(obj["id"].type() == QVariant::ByteArray)
+		{
+			ids += obj["id"].toByteArray();
+		}
+		else if(obj["id"].type() == QVariant::List)
+		{
+			QVariantList vl = obj["id"].toList();
+			foreach(const QVariant &v, vl)
+			{
+				if(v.type() != QVariant::ByteArray)
+					return false;
 
-		id = obj["id"].toByteArray();
+				ids += v.toByteArray();
+			}
+		}
+		else
+			return false;
 	}
 
 	type = Data;
@@ -233,6 +266,19 @@ bool ZhttpResponsePacket::fromVariant(const QVariant &in)
 	}
 
 	userData = obj["user-data"];
+
+	multi = false;
+	if(obj.contains("ext"))
+	{
+		if(obj["ext"].type() != QVariant::Hash)
+			return false;
+
+		QVariantHash ext = obj["ext"].toHash();
+		if(ext.contains("multi") && ext["multi"].type() == QVariant::Bool)
+		{
+			multi = ext["multi"].toBool();
+		}
+	}
 
 	return true;
 }

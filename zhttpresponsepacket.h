@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Fanout, Inc.
+ * Copyright (C) 2012-2016 Fanout, Inc.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ public:
 	};
 
 	QByteArray from;
-	QByteArray id;
+	QList<QByteArray> ids;
 
 	Type type;
 	QByteArray condition;
@@ -57,12 +57,15 @@ public:
 
 	QVariant userData;
 
+	bool multi;
+
 	ZhttpResponsePacket() :
 		type((Type)-1),
 		seq(-1),
 		credits(-1),
 		more(false),
-		code(-1)
+		code(-1),
+		multi(false)
 	{
 	}
 

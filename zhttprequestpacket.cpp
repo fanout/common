@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Fanout, Inc.
+ * Copyright (C) 2012-2016 Fanout, Inc.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,20 @@ QVariant ZhttpRequestPacket::toVariant() const
 	if(!from.isEmpty())
 		obj["from"] = from;
 
-	if(!id.isEmpty())
-		obj["id"] = id;
+	if(!ids.isEmpty())
+	{
+		if(ids.count() == 1)
+		{
+			obj["id"] = ids.first();
+		}
+		else
+		{
+			QVariantList vl;
+			foreach(const QByteArray &id, ids)
+				vl += id;
+			obj["id"] = vl;
+		}
+	}
 
 	QByteArray typeStr;
 	switch(type)
@@ -128,6 +140,13 @@ QVariant ZhttpRequestPacket::toVariant() const
 	if(passthrough.isValid())
 		obj["passthrough"] = passthrough;
 
+	if(multi)
+	{
+		QVariantHash ext;
+		ext["multi"] = true;
+		obj["ext"] = ext;
+	}
+
 	return obj;
 }
 
@@ -147,12 +166,26 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 		from = obj["from"].toByteArray();
 	}
 
+	ids.clear();
 	if(obj.contains("id"))
 	{
-		if(obj["id"].type() != QVariant::ByteArray)
-			return false;
+		if(obj["id"].type() == QVariant::ByteArray)
+		{
+			ids += obj["id"].toByteArray();
+		}
+		else if(obj["id"].type() == QVariant::List)
+		{
+			QVariantList vl = obj["id"].toList();
+			foreach(const QVariant &v, vl)
+			{
+				if(v.type() != QVariant::ByteArray)
+					return false;
 
-		id = obj["id"].toByteArray();
+				ids += v.toByteArray();
+			}
+		}
+		else
+			return false;
 	}
 
 	type = Data;
@@ -390,6 +423,19 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	}
 
 	passthrough = obj.value("passthrough");
+
+	multi = false;
+	if(obj.contains("ext"))
+	{
+		if(obj["ext"].type() != QVariant::Hash)
+			return false;
+
+		QVariantHash ext = obj["ext"].toHash();
+		if(ext.contains("multi") && ext["multi"].type() == QVariant::Bool)
+		{
+			multi = ext["multi"].toBool();
+		}
+	}
 
 	return true;
 }

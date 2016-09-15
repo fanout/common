@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Fanout, Inc.
+ * Copyright (C) 2012-2016 Fanout, Inc.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public:
 	};
 
 	QByteArray from;
-	QByteArray id;
+	QList<QByteArray> ids;
 
 	Type type;
 	QByteArray condition;
@@ -73,6 +73,7 @@ public:
 	bool ignoreTlsErrors;
 	bool followRedirects;
 	QVariant passthrough; // if valid, may contain pushpin-specific passthrough info
+	bool multi;
 
 	ZhttpRequestPacket() :
 		type((Type)-1),
@@ -88,7 +89,8 @@ public:
 		ignorePolicies(false),
 		trustConnectHost(false),
 		ignoreTlsErrors(false),
-		followRedirects(false)
+		followRedirects(false),
+		multi(false)
 	{
 	}
 
