@@ -24,6 +24,24 @@
 class ZhttpResponsePacket
 {
 public:
+	class Id
+	{
+	public:
+		QByteArray id;
+		int seq;
+
+		Id() :
+			seq(-1)
+		{
+		}
+
+		Id(const QByteArray &_id, int _seq = -1) :
+			id(_id),
+			seq(_seq)
+		{
+		}
+	};
+
 	enum Type
 	{
 		Data,
@@ -39,11 +57,10 @@ public:
 	};
 
 	QByteArray from;
-	QList<QByteArray> ids;
+	QList<Id> ids;
 
 	Type type;
 	QByteArray condition;
-	int seq;
 
 	int credits;
 	bool more;
@@ -61,7 +78,6 @@ public:
 
 	ZhttpResponsePacket() :
 		type((Type)-1),
-		seq(-1),
 		credits(-1),
 		more(false),
 		code(-1),

@@ -31,13 +31,24 @@ QVariant ZhttpRequestPacket::toVariant() const
 	{
 		if(ids.count() == 1)
 		{
-			obj["id"] = ids.first();
+			const Id &id = ids.first();
+			if(!id.id.isEmpty())
+				obj["id"] = id.id;
+			if(id.seq != -1)
+				obj["seq"] = id.seq;
 		}
 		else
 		{
 			QVariantList vl;
-			foreach(const QByteArray &id, ids)
-				vl += id;
+			foreach(const Id &id, ids)
+			{
+				QVariantHash vh;
+				if(!id.id.isEmpty())
+					vh["id"] = id.id;
+				if(id.seq != -1)
+					vh["seq"] = id.seq;
+				vl += vh;
+			}
 			obj["id"] = vl;
 		}
 	}
@@ -62,9 +73,6 @@ QVariant ZhttpRequestPacket::toVariant() const
 
 	if(type == Error && !condition.isEmpty())
 		obj["condition"] = condition;
-
-	if(seq != -1)
-		obj["seq"] = seq;
 
 	if(credits != -1)
 		obj["credits"] = credits;
@@ -171,21 +179,54 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 	{
 		if(obj["id"].type() == QVariant::ByteArray)
 		{
-			ids += obj["id"].toByteArray();
+			Id id;
+			id.id = obj["id"].toByteArray();
+			ids += id;
 		}
 		else if(obj["id"].type() == QVariant::List)
 		{
 			QVariantList vl = obj["id"].toList();
 			foreach(const QVariant &v, vl)
 			{
-				if(v.type() != QVariant::ByteArray)
+				if(v.type() != QVariant::Hash)
 					return false;
 
-				ids += v.toByteArray();
+				Id id;
+
+				QVariantHash vh = v.toHash();
+
+				if(vh.contains("id"))
+				{
+					if(vh["id"].type() != QVariant::ByteArray)
+						return false;
+
+					id.id = vh["id"].toByteArray();
+				}
+
+				if(vh.contains("seq"))
+				{
+					if(!vh["seq"].canConvert(QVariant::Int))
+						return false;
+
+					id.seq = vh["seq"].toInt();
+				}
+
+				ids += id;
 			}
 		}
 		else
 			return false;
+	}
+
+	if(obj.contains("seq"))
+	{
+		if(!obj["seq"].canConvert(QVariant::Int))
+			return false;
+
+		if(ids.isEmpty())
+			ids += Id();
+
+		ids.first().seq = obj["seq"].toInt();
 	}
 
 	type = Data;
@@ -228,15 +269,6 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 
 			condition = obj["condition"].toByteArray();
 		}
-	}
-
-	seq = -1;
-	if(obj.contains("seq"))
-	{
-		if(!obj["seq"].canConvert(QVariant::Int))
-			return false;
-
-		seq = obj["seq"].toInt();
 	}
 
 	credits = -1;
