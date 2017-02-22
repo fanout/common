@@ -33,6 +33,7 @@ void log_setOutputLevel(int level);
 bool log_setFile(const QString &fname);
 bool log_rotate();
 
+void log(int level, const char *fmt, ...);
 void log_error(const char *fmt, ...);
 void log_warning(const char *fmt, ...);
 void log_info(const char *fmt, ...);
