@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2015 Fanout, Inc.
+ * Copyright (C) 2012-2017 Fanout, Inc.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,57 @@
 
 #include "httpheaders.h"
 
-static QList<QByteArray> header_split(const QByteArray &in)
+// return position, end of string if not found, -1 on error
+static int findNonQuoted(const QByteArray &in, char c, int offset = 0)
 {
-	QList<QByteArray> parts = in.split(',');
-	for(int n = 0; n < parts.count(); ++n)
-		parts[n] = parts[n].trimmed();
-	return parts;
+	bool inQuote = false;
+
+	for(int n = offset; n < in.size(); ++n)
+	{
+		char i = in[n];
+
+		if(inQuote)
+		{
+			if(i == '\\')
+			{
+				++n;
+
+				// no character after the escape
+				if(n >= in.size())
+				{
+					return -1;
+				}
+			}
+			else if(i == '\"')
+				inQuote = false;
+		}
+		else
+		{
+			if(i == '\"')
+			{
+				inQuote = true;
+			}
+			else if(i == c)
+			{
+				return n;
+			}
+		}
+	}
+
+	// unterminated quote
+	if(inQuote)
+	{
+		return -1;
+	}
+
+	return in.size();
 }
 
 // search for one of many chars
-static int findNext(const QByteArray &in, const char *charList, int start = 0)
+static int findNext(const QByteArray &in, const char *charList, int offset = 0)
 {
 	int len = qstrlen(charList);
-	for(int n = start; n < in.size(); ++n)
+	for(int n = offset; n < in.size(); ++n)
 	{
 		char c = in[n];
 		for(int i = 0; i < len; ++i)
@@ -40,6 +78,32 @@ static int findNext(const QByteArray &in, const char *charList, int start = 0)
 	}
 
 	return -1;
+}
+
+static QList<QByteArray> headerSplit(const QByteArray &in)
+{
+	QList<QByteArray> parts;
+	int pos = 0;
+	while(pos < in.size())
+	{
+		int end = findNonQuoted(in, ',', pos);
+		if(end != -1)
+		{
+			parts += in.mid(pos, end - pos).trimmed();
+
+			if(end < in.size())
+				pos = end + 1;
+			else
+				pos = in.size();
+		}
+		else
+		{
+			parts += in.mid(pos).trimmed();
+
+			pos = in.size();
+		}
+	}
+	return parts;
 }
 
 bool HttpHeaderParameters::contains(const QByteArray &key) const
@@ -116,7 +180,7 @@ QList<QByteArray> HttpHeaders::getAll(const QByteArray &key, bool split) const
 		if(qstricmp(h.first.data(), key.data()) == 0)
 		{
 			if(split)
-				out += header_split(h.second);
+				out += headerSplit(h.second);
 			else
 				out += h.second;
 		}
@@ -150,7 +214,7 @@ QList<QByteArray> HttpHeaders::takeAll(const QByteArray &key, bool split)
 		if(qstricmp(h.first.data(), key.data()) == 0)
 		{
 			if(split)
-				out += header_split(h.second);
+				out += headerSplit(h.second);
 			else
 				out += h.second;
 
