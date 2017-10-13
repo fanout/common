@@ -91,6 +91,7 @@ public:
 	bool followRedirects;
 	QVariant passthrough; // if valid, may contain pushpin-specific passthrough info
 	bool multi;
+	bool quiet;
 
 	ZhttpRequestPacket() :
 		type((Type)-1),
@@ -106,7 +107,8 @@ public:
 		trustConnectHost(false),
 		ignoreTlsErrors(false),
 		followRedirects(false),
-		multi(false)
+		multi(false),
+		quiet(false)
 	{
 	}
 

@@ -148,10 +148,16 @@ QVariant ZhttpRequestPacket::toVariant() const
 	if(passthrough.isValid())
 		obj["passthrough"] = passthrough;
 
-	if(multi)
+	if(multi || quiet)
 	{
 		QVariantHash ext;
-		ext["multi"] = true;
+
+		if(multi)
+			ext["multi"] = true;
+
+		if(quiet)
+			ext["quiet"] = true;
+
 		obj["ext"] = ext;
 	}
 
@@ -466,6 +472,11 @@ bool ZhttpRequestPacket::fromVariant(const QVariant &in)
 		if(ext.contains("multi") && ext["multi"].type() == QVariant::Bool)
 		{
 			multi = ext["multi"].toBool();
+		}
+
+		if(ext.contains("quiet") && ext["quiet"].type() == QVariant::Bool)
+		{
+			quiet = ext["quiet"].toBool();
 		}
 	}
 
