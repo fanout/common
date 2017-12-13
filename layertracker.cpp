@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * Alternatively, this file may be used under the terms of a commercial Fanout
+ * Alternatively, this program may be used under the terms of a commercial
  * license, where the commercial license agreement is provided with the
  * software or contained in a written agreement between you and Fanout. For
  * further information use the contact form at <https://fanout.io/enterprise/>.
