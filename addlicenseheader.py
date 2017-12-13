@@ -19,7 +19,9 @@ start_mark = '$FANOUT_BEGIN_LICENSE:'
 end_mark = '$FANOUT_END_LICENSE$'
 
 start = filedata.find(start_mark)
-assert(start >= 0)
+if start < 0:
+	sys.stderr.write('%s: not marked\n' % sys.argv[1])
+	sys.exit(1)
 start += len(start_mark)
 end = filedata.find('$', start)
 ltype = filedata[start:end]
