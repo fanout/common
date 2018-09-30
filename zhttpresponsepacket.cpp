@@ -89,16 +89,20 @@ QVariant ZhttpResponsePacket::toVariant() const
 	if(code != -1)
 	{
 		obj["code"] = code;
-		obj["reason"] = reason;
-		QVariantList vheaders;
-		foreach(const HttpHeader &h, headers)
+
+		if(type == Data)
 		{
-			QVariantList vheader;
-			vheader += h.first;
-			vheader += h.second;
-			vheaders += QVariant(vheader);
+			obj["reason"] = reason;
+			QVariantList vheaders;
+			foreach(const HttpHeader &h, headers)
+			{
+				QVariantList vheader;
+				vheader += h.first;
+				vheader += h.second;
+				vheaders += QVariant(vheader);
+			}
+			obj["headers"] = vheaders;
 		}
-		obj["headers"] = vheaders;
 	}
 
 	if(!body.isNull())
