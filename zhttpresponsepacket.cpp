@@ -90,7 +90,7 @@ QVariant ZhttpResponsePacket::toVariant() const
 	{
 		obj["code"] = code;
 
-		if(type == Data)
+		if(type == Data || (type == Error && condition == "rejected"))
 		{
 			obj["reason"] = reason;
 			QVariantList vheaders;
