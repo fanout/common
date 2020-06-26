@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2013 Fanout, Inc.
+ * Copyright (C) 2012-2020 Fanout, Inc.
  * 
  * $FANOUT_BEGIN_LICENSE:GPL$
  *
@@ -204,7 +204,7 @@ void toNull(const QByteArray &in, int offset, int dataOffset, int dataSize, bool
 QVariant toVariant(const QByteArray &in, int offset, Type type, int dataOffset, int dataSize, bool *ok)
 {
 	QVariant val;
-	bool ok_;
+	bool ok_ = false;
 	switch(type)
 	{
 		case ByteArray:
