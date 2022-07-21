@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2016 Fanout, Inc.
+ * Copyright (C) 2012-2022 Fanout, Inc.
  * 
  * $FANOUT_BEGIN_LICENSE:GPL$
  *
@@ -29,12 +29,13 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <QString>
-#include <QTime>
+#include <QElapsedTimer>
+#include <QDateTime>
 #include <QMutex>
 
 Q_GLOBAL_STATIC(QMutex, g_mutex)
 static int g_level = LOG_LEVEL_DEBUG;
-static QTime g_time;
+static QElapsedTimer g_time;
 static QString *g_filename;
 static FILE *g_file;
 
@@ -54,7 +55,7 @@ static void log(int level, const char *fmt, va_list ap)
 	g_mutex()->lock();
 	int current_level = g_level;
 	int elapsed;
-	if(!g_time.isNull())
+	if(g_time.isValid())
 		elapsed = g_time.elapsed();
 	else
 		elapsed = -1;
@@ -62,8 +63,7 @@ static void log(int level, const char *fmt, va_list ap)
 
 	if(level <= current_level)
 	{
-		QString str;
-		str.vsprintf(fmt, ap);
+		QString str = QString::vasprintf(fmt, ap);
 
 		const char *lstr;
 		switch(level)

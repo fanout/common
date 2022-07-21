@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Fanout, Inc.
+ * Copyright (C) 2012-2022 Fanout, Inc.
  * 
  * $FANOUT_BEGIN_LICENSE:GPL$
  *
@@ -370,7 +370,7 @@ QString byteArrayToEscapedString(const QByteArray &in)
 		else if(c >= 0x20 && c < 0x7f)
 			out += QChar::fromLatin1(c);
 		else
-			out += QString().sprintf("\\x%02x", (unsigned char)c);
+			out += QString::asprintf("\\x%02x", (unsigned char)c);
 	}
 	return out;
 }
