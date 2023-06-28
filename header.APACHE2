@@ -1,7 +1,3 @@
-/*
- * Copyright (C) 2014 Fanout, Inc.
- *
- * $FANOUT_BEGIN_LICENSE:APACHE2$
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +11,3 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * $FANOUT_END_LICENSE$
- */
-
-#ifndef LAYERTRACKER_H
-#define LAYERTRACKER_H
-
-#include <QList>
-
-class LayerTracker
-{
-public:
-	LayerTracker();
-
-	void reset();
-
-	void addPlain(int plain);
-	void specifyEncoded(int encoded, int plain);
-	int finished(int encoded);
-
-private:
-	class Item
-	{
-	public:
-		int plain;
-		int encoded;
-	};
-
-	int plain_;
-	QList<Item> items_;
-};
-
-#endif

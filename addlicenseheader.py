@@ -1,7 +1,7 @@
 import sys
 
 if len(sys.argv) < 2:
-	print 'usage: %s [file] [license_type:file] ...' % sys.argv[0]
+	print('usage: %s [file] [license_type:file] ...' % sys.argv[0])
 	sys.exit(1)
 
 licenses = {}
